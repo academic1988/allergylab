@@ -1,4 +1,4 @@
-name: AllergyLab CI/CD
+name: AllergyLab CI
 
 on: [push]
 
@@ -6,9 +6,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Source
+    - name: Checkout source
       uses: actions/checkout@v4
-    - name: Build image
+    - name: Build images
       run: |
         cd Part7a
         docker build -t ${{ secrets.DOCKER_USERNAME }}/al-app:latest ./app
@@ -24,3 +24,14 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/al-app:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/al-db-loader:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/al-email:latest
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - name: '**PLACEHOLDER** Deploy to Kubernetes'
+      run: echo Placeholder for Deployment
+    - name: Run containers
+      run: |
+        docker run -d ${{ secrets.DOCKER_USERNAME }}/al-app:latest
+        docker run -d ${{ secrets.DOCKER_USERNAME }}/al-db-loader:latest
+        docker run -d ${{ secrets.DOCKER_USERNAME }}/al-email:latest
